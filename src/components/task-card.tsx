@@ -4,15 +4,34 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Check, Flame } from 'lucide-react';
-import { cn, getColorClasses } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface TaskCardProps {
   task: Task;
-  onToggleComplete: (id: number) => void;
-  onUpdateValue: (id: number, value: number) => void;
+  onToggleComplete: (id: string) => void;
+  onUpdateValue: (id: string, value: number) => void;
 }
 
 export default function TaskCard({ task, onToggleComplete, onUpdateValue }: TaskCardProps) {
+  const colorClasses = {
+    blue: {
+      text: 'text-primary',
+      slider: '[&>*:first-child>*]:bg-primary [&>*:last-child]:border-primary'
+    },
+    purple: {
+      text: 'text-accent',
+      slider: '[&>*:first-child>*]:bg-accent [&>*:last-child]:border-accent'
+    },
+    green: {
+      text: 'text-green-500',
+      slider: '[&>*:first-child>*]:bg-green-500 [&>*:last-child]:border-green-500'
+    },
+    orange: {
+      text: 'text-orange-500',
+      slider: '[&>*:first-child>*]:bg-orange-500 [&>*:last-child]:border-orange-500'
+    }
+  };
+  
   return (
     <Card className="shadow-lg border-card/10">
       <CardContent className="p-4">
@@ -24,7 +43,7 @@ export default function TaskCard({ task, onToggleComplete, onUpdateValue }: Task
                 {task.name}
               </h3>
               <div className="flex items-center space-x-2">
-                <Flame className="w-4 h-4 text-orange-500" />
+                <Flame className="w-4 h-4 text-primary" />
                 <span className="text-sm text-muted-foreground">
                   {task.streak} day streak
                 </span>
@@ -50,7 +69,7 @@ export default function TaskCard({ task, onToggleComplete, onUpdateValue }: Task
             <span className="text-sm text-muted-foreground">
               Progress Today
             </span>
-            <span className={cn('text-sm font-medium', getColorClasses(task.color, 'text'))}>
+            <span className={cn('text-sm font-medium', colorClasses[task.color]?.text)}>
               {task.currentValue}/{task.targetValue} {task.unit}
             </span>
           </div>
@@ -60,12 +79,7 @@ export default function TaskCard({ task, onToggleComplete, onUpdateValue }: Task
             max={task.targetValue}
             step={1}
             onValueChange={(value) => onUpdateValue(task.id, value[0])}
-            className={cn({
-              '[&>*:first-child>*]:bg-primary [&>*:last-child]:border-primary': task.color === 'blue',
-              '[&>*:first-child>*]:bg-accent [&>*:last-child]:border-accent': task.color === 'purple',
-              '[&>*:first-child>*]:bg-green-500 [&>*:last-child]:border-green-500': task.color === 'green',
-              '[&>*:first-child>*]:bg-orange-500 [&>*:last-child]:border-orange-500': task.color === 'orange',
-            })}
+            className={cn(colorClasses[task.color]?.slider)}
           />
         </div>
       </CardContent>

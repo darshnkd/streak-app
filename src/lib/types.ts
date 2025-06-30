@@ -1,5 +1,5 @@
 export type Task = {
-  id: number;
+  id: string;
   name: string;
   icon: string;
   completed: boolean;
@@ -11,13 +11,13 @@ export type Task = {
 };
 
 export type Todo = {
-  id: number;
+  id: string;
   text: string;
   completed: boolean;
 };
 
 export type MonthlyGoal = {
-  id: number;
+  id: string;
   name: string;
   current: number;
   target: number;
@@ -26,7 +26,7 @@ export type MonthlyGoal = {
 };
 
 export type Achievement = {
-  id: number;
+  id: string;
   title: string;
   description: string;
   icon: string;

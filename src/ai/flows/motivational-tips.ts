@@ -14,7 +14,7 @@ import {z} from 'genkit';
 const MotivationalTipInputSchema = z.object({
   taskCompletionHistory: z
     .array(z.object({
-      taskId: z.number(),
+      taskId: z.string(),
       completed: z.boolean(),
       streak: z.number(),
       name: z.string(),

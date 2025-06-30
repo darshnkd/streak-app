@@ -2,7 +2,7 @@ import type { Task, Todo, MonthlyGoal, Achievement } from '@/lib/types';
 
 export const initialTasks: Task[] = [
   {
-    id: 1,
+    id: '1',
     name: 'DSA Practice',
     icon: '💻',
     completed: false,
@@ -13,7 +13,7 @@ export const initialTasks: Task[] = [
     color: 'blue'
   },
   {
-    id: 2,
+    id: '2',
     name: 'Project Work',
     icon: '🚀',
     completed: false,
@@ -21,10 +21,10 @@ export const initialTasks: Task[] = [
     currentValue: 45,
     targetValue: 120,
     unit: 'minutes',
-    color: 'green'
+    color: 'purple'
   },
   {
-    id: 3,
+    id: '3',
     name: 'Exercise',
     icon: '💪',
     completed: false,
@@ -32,10 +32,10 @@ export const initialTasks: Task[] = [
     currentValue: 25,
     targetValue: 120,
     unit: 'minutes',
-    color: 'purple'
+    color: 'green'
   },
   {
-    id: 4,
+    id: '4',
     name: 'Communication',
     icon: '🗣️',
     completed: false,
@@ -48,22 +48,22 @@ export const initialTasks: Task[] = [
 ];
 
 export const initialTodos: Todo[] = [
-  { id: 1, text: 'Review code from yesterday', completed: false },
-  { id: 2, text: 'Call dentist for appointment', completed: false },
-  { id: 3, text: 'Buy groceries', completed: true },
-  { id: 4, text: 'Update resume', completed: false }
+  { id: '1', text: 'Review code from yesterday', completed: false },
+  { id: '2', text: 'Call dentist for appointment', completed: false },
+  { id: '3', text: 'Buy groceries', completed: true },
+  { id: '4', text: 'Update resume', completed: false }
 ];
 
 export const initialMonthlyGoals: MonthlyGoal[] = [
-  { id: 1, name: 'DSA Problems', current: 85, target: 100, unit: 'problems', color: 'blue' },
-  { id: 2, name: 'Project Hours', current: 45, target: 80, unit: 'hours', color: 'green' },
-  { id: 3, name: 'Workout Days', current: 18, target: 25, unit: 'days', color: 'purple' },
-  { id: 4, name: 'Communication Sessions', current: 12, target: 20, unit: 'sessions', color: 'orange' }
+  { id: '1', name: 'DSA Problems', current: 85, target: 100, unit: 'problems', color: 'blue' },
+  { id: '2', name: 'Project Hours', current: 45, target: 80, unit: 'hours', color: 'purple' },
+  { id: '3', name: 'Workout Days', current: 18, target: 25, unit: 'days', color: 'green' },
+  { id: '4', name: 'Communication Sessions', current: 12, target: 20, unit: 'sessions', color: 'orange' }
 ];
 
 export const initialAchievements: Achievement[] = [
-  { id: 1, title: 'Problem Solver', description: 'Solved hardest problem', icon: '🧠', unlocked: true, date: '2024-06-28' },
-  { id: 2, title: 'Fitness Beast', description: 'Max 30 push-ups', icon: '💪', unlocked: true, date: '2024-06-25' },
-  { id: 3, title: 'Consistency King', description: '7-day streak', icon: '👑', unlocked: true, date: '2024-06-20' },
-  { id: 4, title: 'Code Warrior', description: '50 problems solved', icon: '⚔️', unlocked: false, date: null }
+  { id: '1', title: 'Problem Solver', description: 'Solved hardest problem', icon: '🧠', unlocked: true, date: '2024-06-28' },
+  { id: '2', title: 'Fitness Beast', description: 'Max 30 push-ups', icon: '💪', unlocked: true, date: '2024-06-25' },
+  { id: '3', title: 'Consistency King', description: '7-day streak', icon: '👑', unlocked: true, date: '2024-06-20' },
+  { id: '4', title: 'Code Warrior', description: '50 problems solved', icon: '⚔️', unlocked: false, date: null }
 ];

@@ -9,9 +9,9 @@ import { cn } from '@/lib/utils';
 
 interface TodoListProps {
   todos: Todo[];
-  onToggle: (id: number) => void;
+  onToggle: (id: string) => void;
   onAdd: (text: string) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 export default function TodoList({ todos, onToggle, onAdd, onDelete }: TodoListProps) {

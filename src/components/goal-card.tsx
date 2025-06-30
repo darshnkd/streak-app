@@ -6,22 +6,25 @@ import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Edit3, Target } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 interface GoalCardProps {
   goal: MonthlyGoal;
   isEditing: boolean;
-  onSetEditing: (id: number | null) => void;
-  onUpdateGoal: (id: number, field: 'current' | 'target', value: number) => void;
+  onSetEditing: (id: string | null) => void;
+  onUpdateGoal: (id: string, field: 'current' | 'target', value: number) => void;
 }
 
 export default function GoalCard({ goal, isEditing, onSetEditing, onUpdateGoal }: GoalCardProps) {
   const progressPercentage = goal.target > 0 ? Math.min((goal.current / goal.target) * 100, 100) : 0;
-  const isBehindTarget = goal.current < goal.target * 0.7;
   
   const today = new Date();
   const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-  const daysRemaining = Math.max(1, daysInMonth - today.getDate());
+  const daysPassed = today.getDate();
+  const monthProgress = (daysPassed / daysInMonth) * 100;
+  
+  const isBehindTarget = progressPercentage < monthProgress && progressPercentage < 100;
+
+  const daysRemaining = Math.max(1, daysInMonth - daysPassed);
   const dailyTarget = goal.target > goal.current ? Math.ceil((goal.target - goal.current) / daysRemaining) : 0;
 
   return (
@@ -75,7 +78,7 @@ export default function GoalCard({ goal, isEditing, onSetEditing, onUpdateGoal }
               </span>
             </div>
             
-            <Progress value={progressPercentage} className="h-3 mb-4"/>
+            <Progress value={progressPercentage} className="h-3 mb-4 bg-muted [&>*:first-child]:bg-primary"/>
 
             {isBehindTarget && dailyTarget > 0 && (
               <div className="flex items-center space-x-2 text-orange-500 text-sm p-2 bg-orange-500/10 rounded-md">

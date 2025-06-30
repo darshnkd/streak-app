@@ -1,15 +1,23 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Home, BarChart3, Settings, Trophy, Signal, BatteryFull } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Home, BarChart3, Settings, Trophy, Signal, BatteryFull, Loader2 } from 'lucide-react';
 import type { ActiveTab, Task, Todo, MonthlyGoal, Achievement } from '@/lib/types';
-import { initialTasks, initialTodos, initialMonthlyGoals, initialAchievements } from '@/lib/data';
+import { initialAchievements } from '@/lib/data';
 import HomeScreen from './screens/home-screen';
 import GoalsScreen from './screens/goals-screen';
 import AchievementsScreen from './screens/achievements-screen';
 import SettingsScreen from './screens/settings-screen';
 import { cn } from '@/lib/utils';
 import type { User } from 'firebase/auth';
+import { 
+  getUserData, 
+  updateTaskInDb, 
+  updateTodoInDb, 
+  addTodoInDb, 
+  deleteTodoInDb, 
+  updateMonthlyGoalInDb 
+} from '@/lib/firestore';
 
 const navItems = [
   { id: 'home', icon: Home, label: 'Home' },
@@ -22,10 +30,24 @@ export default function AppShell({ user }: { user: User }) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [darkMode, setDarkMode] = useState(false);
   
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
-  const [monthlyGoals, setMonthlyGoals] = useState<MonthlyGoal[]>(initialMonthlyGoals);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [monthlyGoals, setMonthlyGoals] = useState<MonthlyGoal[]>([]);
   const [achievements] = useState<Achievement[]>(initialAchievements);
+  const [dataLoading, setDataLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      getUserData(user.uid)
+        .then(data => {
+          setTasks(data.tasks);
+          setTodos(data.todos);
+          setMonthlyGoals(data.monthlyGoals);
+        })
+        .catch(console.error)
+        .finally(() => setDataLoading(false));
+    }
+  }, [user]);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -33,45 +55,63 @@ export default function AppShell({ user }: { user: User }) {
     root.classList.add(darkMode ? 'dark' : 'light');
   }, [darkMode]);
 
-  const toggleTask = (taskId: number) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId ? { ...task, completed: !task.completed } : task
+  const toggleTask = useCallback(async (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    const newCompleted = !task.completed;
+    setTasks(currentTasks => currentTasks.map(t => 
+      t.id === taskId ? { ...t, completed: newCompleted } : t
     ));
-  };
+    await updateTaskInDb(user.uid, taskId, { completed: newCompleted });
+  }, [tasks, user.uid]);
 
-  const updateTaskValue = (taskId: number, newValue: number) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId ? { ...task, currentValue: Math.max(0, newValue) } : task
+  const updateTaskValue = useCallback(async (taskId: string, newValue: number) => {
+    const newCurrentValue = Math.max(0, newValue);
+    setTasks(currentTasks => currentTasks.map(t => 
+      t.id === taskId ? { ...t, currentValue: newCurrentValue } : t
     ));
-  };
+    await updateTaskInDb(user.uid, taskId, { currentValue: newCurrentValue });
+  }, [user.uid]);
 
-  const updateMonthlyGoal = (goalId: number, field: 'current' | 'target', value: number) => {
-    setMonthlyGoals(monthlyGoals.map(goal => 
-      goal.id === goalId ? { ...goal, [field]: Math.max(0, value) } : goal
+  const updateMonthlyGoal = useCallback(async (goalId: string, field: 'current' | 'target', value: number) => {
+    const newFieldValue = Math.max(0, value);
+    setMonthlyGoals(currentGoals => currentGoals.map(goal => 
+      goal.id === goalId ? { ...goal, [field]: newFieldValue } : goal
     ));
-  };
+    await updateMonthlyGoalInDb(user.uid, goalId, { [field]: newFieldValue });
+  }, [user.uid]);
 
-  const toggleTodo = (todoId: number) => {
-    setTodos(todos.map(todo => 
-      todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
+  const toggleTodo = useCallback(async (todoId: string) => {
+    const todo = todos.find(t => t.id === todoId);
+    if (!todo) return;
+    const newCompleted = !todo.completed;
+    setTodos(currentTodos => currentTodos.map(t => 
+      t.id === todoId ? { ...t, completed: newCompleted } : t
     ));
-  };
+    await updateTodoInDb(user.uid, todoId, { completed: newCompleted });
+  }, [todos, user.uid]);
 
-  const addTodo = (newTodoText: string) => {
+  const addTodo = useCallback(async (newTodoText: string) => {
     if (newTodoText.trim()) {
-      setTodos([...todos, {
-        id: Date.now(),
-        text: newTodoText.trim(),
-        completed: false
-      }]);
+      const newTodo = await addTodoInDb(user.uid, newTodoText.trim());
+      setTodos(prevTodos => [...prevTodos, newTodo]);
     }
-  };
+  }, [user.uid]);
 
-  const deleteTodo = (todoId: number) => {
-    setTodos(todos.filter(todo => todo.id !== todoId));
-  };
+  const deleteTodo = useCallback(async (todoId: string) => {
+    setTodos(currentTodos => currentTodos.filter(todo => todo.id !== todoId));
+    await deleteTodoInDb(user.uid, todoId);
+  }, [user.uid]);
 
   const renderScreen = () => {
+    if (dataLoading) {
+      return (
+        <div className="flex h-64 items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      );
+    }
+    
     switch (activeTab) {
       case 'home': 
         return <HomeScreen 

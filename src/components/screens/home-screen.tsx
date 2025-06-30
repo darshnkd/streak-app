@@ -8,11 +8,11 @@ import { MotivationalTip } from '@/components/motivational-tip';
 interface HomeScreenProps {
   tasks: Task[];
   todos: Todo[];
-  toggleTask: (id: number) => void;
-  updateTaskValue: (id: number, value: number) => void;
-  toggleTodo: (id: number) => void;
+  toggleTask: (id: string) => void;
+  updateTaskValue: (id: string, value: number) => void;
+  toggleTodo: (id: string) => void;
   addTodo: (text: string) => void;
-  deleteTodo: (id: number) => void;
+  deleteTodo: (id: string) => void;
 }
 
 export default function HomeScreen({
@@ -25,7 +25,7 @@ export default function HomeScreen({
   deleteTodo
 }: HomeScreenProps) {
   const completedTasks = tasks.filter(t => t.completed).length;
-  const averageStreak = Math.round(tasks.reduce((acc, task) => acc + task.streak, 0) / tasks.length);
+  const averageStreak = tasks.length > 0 ? Math.round(tasks.reduce((acc, task) => acc + task.streak, 0) / tasks.length) : 0;
 
   return (
     <div className="space-y-6">
@@ -66,7 +66,7 @@ export default function HomeScreen({
               </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-500">
+              <div className="text-2xl font-bold text-primary">
                 {averageStreak}
               </div>
               <div className="text-sm text-muted-foreground">

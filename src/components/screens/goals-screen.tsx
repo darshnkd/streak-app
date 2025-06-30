@@ -7,11 +7,11 @@ import { Plus } from 'lucide-react';
 
 interface GoalsScreenProps {
   monthlyGoals: MonthlyGoal[];
-  updateMonthlyGoal: (id: number, field: 'current' | 'target', value: number) => void;
+  updateMonthlyGoal: (id: string, field: 'current' | 'target', value: number) => void;
 }
 
 export default function GoalsScreen({ monthlyGoals, updateMonthlyGoal }: GoalsScreenProps) {
-  const [editingGoalId, setEditingGoalId] = useState<number | null>(null);
+  const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
 
   return (
     <div className="space-y-6">
