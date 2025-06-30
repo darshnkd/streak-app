@@ -10,6 +10,8 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  query,
+  limit,
 } from 'firebase/firestore';
 import type { Task, Todo, MonthlyGoal } from '@/lib/types';
 import { initialTasks, initialTodos, initialMonthlyGoals } from '@/lib/data';
@@ -44,25 +46,33 @@ const seedInitialData = async (userId: string) => {
 
 export const getUserData = async (userId: string) => {
   const userDocRef = doc(db, 'users', userId);
-  const userDocSnap = await getDoc(userDocRef);
+  const tasksRef = getCollectionRef('tasks', userId);
 
-  if (!userDocSnap.exists()) {
+  const [userDocSnap, tasksSnapshot] = await Promise.all([
+    getDoc(userDocRef),
+    getDocs(query(tasksRef, limit(1))), // Check if tasks collection has at least one doc
+  ]);
+
+  const mustSeed = !userDocSnap.exists() || tasksSnapshot.empty;
+
+  if (mustSeed) {
     await seedInitialData(userId);
-    await setDoc(userDocRef, { initialized: true });
+    if (!userDocSnap.exists()) {
+      await setDoc(userDocRef, { initialized: true });
+    }
   }
 
-  const tasksRef = getCollectionRef('tasks', userId);
   const todosRef = getCollectionRef('todos', userId);
   const monthlyGoalsRef = getCollectionRef('monthlyGoals', userId);
 
-  const [tasksSnapshot, todosSnapshot, monthlyGoalsSnapshot] =
+  const [finalTasksSnapshot, todosSnapshot, monthlyGoalsSnapshot] =
     await Promise.all([
       getDocs(tasksRef),
       getDocs(todosRef),
       getDocs(monthlyGoalsRef),
     ]);
 
-  const tasks = tasksSnapshot.docs.map(
+  const tasks = finalTasksSnapshot.docs.map(
     (doc) => ({ ...doc.data(), id: doc.id } as Task)
   );
   const todos = todosSnapshot.docs.map(
