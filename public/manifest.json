@@ -2,23 +2,8 @@
   "name": "Momentum Master",
   "short_name": "Momentum",
   "description": "Build streaks, achieve your goals, and master your momentum.",
-  "icons": [
-    {
-      "src": "/icons/icon-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
-    }
-  ],
-  "theme_color": "#F97316",
-  "background_color": "#FAFAFB",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait"
+  "background_color": "#F97316",
+  "theme_color": "#F97316"
 }
