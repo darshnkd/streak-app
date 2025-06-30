@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Edit3, Target } from 'lucide-react';
-import { cn, getColorClasses } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface GoalCardProps {
   goal: MonthlyGoal;
@@ -16,9 +16,13 @@ interface GoalCardProps {
 }
 
 export default function GoalCard({ goal, isEditing, onSetEditing, onUpdateGoal }: GoalCardProps) {
-  const progressPercentage = Math.min((goal.current / goal.target) * 100, 100);
+  const progressPercentage = goal.target > 0 ? Math.min((goal.current / goal.target) * 100, 100) : 0;
   const isBehindTarget = goal.current < goal.target * 0.7;
-  const dailyTarget = Math.ceil((goal.target - goal.current) / (30 - new Date().getDate()));
+  
+  const today = new Date();
+  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  const daysRemaining = Math.max(1, daysInMonth - today.getDate());
+  const dailyTarget = goal.target > goal.current ? Math.ceil((goal.target - goal.current) / daysRemaining) : 0;
 
   return (
     <Card className="shadow-lg border-card/10">
@@ -66,12 +70,12 @@ export default function GoalCard({ goal, isEditing, onSetEditing, onUpdateGoal }
               <span className="text-muted-foreground">
                 {goal.current} / {goal.target} {goal.unit}
               </span>
-              <span className={cn('font-medium', getColorClasses(goal.color, 'text'))}>
+              <span className="font-medium text-primary">
                 {Math.round(progressPercentage)}%
               </span>
             </div>
             
-            <Progress value={progressPercentage} className={cn("h-3 mb-4 [&>*]:transition-all [&>*]:duration-300", getColorClasses(goal.color, 'bg'))}/>
+            <Progress value={progressPercentage} className="h-3 mb-4"/>
 
             {isBehindTarget && dailyTarget > 0 && (
               <div className="flex items-center space-x-2 text-orange-500 text-sm p-2 bg-orange-500/10 rounded-md">
