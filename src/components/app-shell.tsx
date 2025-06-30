@@ -9,6 +9,7 @@ import GoalsScreen from './screens/goals-screen';
 import AchievementsScreen from './screens/achievements-screen';
 import SettingsScreen from './screens/settings-screen';
 import { cn } from '@/lib/utils';
+import type { User } from 'firebase/auth';
 
 const navItems = [
   { id: 'home', icon: Home, label: 'Home' },
@@ -17,7 +18,7 @@ const navItems = [
   { id: 'settings', icon: Settings, label: 'Settings' },
 ] as const;
 
-export default function AppShell() {
+export default function AppShell({ user }: { user: User }) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [darkMode, setDarkMode] = useState(false);
   
@@ -90,7 +91,7 @@ export default function AppShell() {
       case 'achievements': 
         return <AchievementsScreen achievements={achievements} />;
       case 'settings': 
-        return <SettingsScreen darkMode={darkMode} setDarkMode={setDarkMode} />;
+        return <SettingsScreen user={user} darkMode={darkMode} setDarkMode={setDarkMode} />;
       default: 
         return <HomeScreen 
           tasks={tasks}

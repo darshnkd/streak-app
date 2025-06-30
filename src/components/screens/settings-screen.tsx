@@ -1,19 +1,50 @@
 'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
+import type { User } from 'firebase/auth';
+import { LogOut } from 'lucide-react';
 
 interface SettingsScreenProps {
+  user: User;
   darkMode: boolean;
   setDarkMode: (value: boolean) => void;
 }
 
-export default function SettingsScreen({ darkMode, setDarkMode }: SettingsScreenProps) {
+export default function SettingsScreen({ user, darkMode, setDarkMode }: SettingsScreenProps) {
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-foreground">
         Settings
       </h1>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Account</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+           <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Email</span>
+              <span className="text-foreground">{user.email}</span>
+            </div>
+            <Button variant="outline" onClick={handleSignOut} className="w-full">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
+            </Button>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardContent className="p-6">
