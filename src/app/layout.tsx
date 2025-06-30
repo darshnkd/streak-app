@@ -10,6 +10,8 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 export const metadata: Metadata = {
   title: 'Momentum Master',
   description: 'Build streaks, achieve your goals, and master your momentum.',
+  manifest: '/manifest.json',
+  themeColor: '#F97316',
 };
 
 export default function RootLayout({
