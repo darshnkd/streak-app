@@ -19,9 +19,9 @@ export const initialTasks: Task[] = [
     completed: false,
     streak: 8,
     currentValue: 45,
-    targetValue: 60,
+    targetValue: 120,
     unit: 'minutes',
-    color: 'purple'
+    color: 'green'
   },
   {
     id: 3,
@@ -30,9 +30,9 @@ export const initialTasks: Task[] = [
     completed: false,
     streak: 15,
     currentValue: 25,
-    targetValue: 30,
+    targetValue: 120,
     unit: 'minutes',
-    color: 'green'
+    color: 'purple'
   },
   {
     id: 4,

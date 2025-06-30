@@ -2,8 +2,8 @@
 import type { Task } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Check, Flame, Minus, Plus } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Check, Flame } from 'lucide-react';
 import { cn, getColorClasses } from '@/lib/utils';
 
 interface TaskCardProps {
@@ -13,8 +13,6 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({ task, onToggleComplete, onUpdateValue }: TaskCardProps) {
-  const progressPercentage = Math.min((task.currentValue / task.targetValue) * 100, 100);
-
   return (
     <Card className="shadow-lg border-card/10">
       <CardContent className="p-4">
@@ -57,27 +55,18 @@ export default function TaskCard({ task, onToggleComplete, onUpdateValue }: Task
             </span>
           </div>
 
-          <div className="flex items-center justify-between bg-muted/50 rounded-lg p-2">
-            <Button
-              size="icon"
-              className={cn('w-8 h-8 rounded-md', getColorClasses(task.color, 'bg'))}
-              onClick={() => onUpdateValue(task.id, task.currentValue - 1)}
-            >
-              <Minus className="w-4 h-4" />
-            </Button>
-            <span className="font-semibold text-lg text-foreground">
-              {task.currentValue}
-            </span>
-            <Button
-              size="icon"
-              className={cn('w-8 h-8 rounded-md', getColorClasses(task.color, 'bg'))}
-              onClick={() => onUpdateValue(task.id, task.currentValue + 1)}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <Progress value={progressPercentage} className={cn('h-2 [&>*]:transition-all [&>*]:duration-300', getColorClasses(task.color, 'bg'))} />
+          <Slider
+            value={[task.currentValue]}
+            max={task.targetValue}
+            step={1}
+            onValueChange={(value) => onUpdateValue(task.id, value[0])}
+            className={cn({
+              '[&>*:first-child>*]:bg-primary [&>*:last-child]:border-primary': task.color === 'blue',
+              '[&>*:first-child>*]:bg-accent [&>*:last-child]:border-accent': task.color === 'purple',
+              '[&>*:first-child>*]:bg-green-500 [&>*:last-child]:border-green-500': task.color === 'green',
+              '[&>*:first-child>*]:bg-orange-500 [&>*:last-child]:border-orange-500': task.color === 'orange',
+            })}
+          />
         </div>
       </CardContent>
     </Card>
