@@ -56,8 +56,8 @@ export const initialTodos: Todo[] = [
 
 export const initialMonthlyGoals: MonthlyGoal[] = [
   { id: 1, name: 'DSA Problems', current: 85, target: 100, unit: 'problems', color: 'blue' },
-  { id: 2, name: 'Project Hours', current: 45, target: 80, unit: 'hours', color: 'purple' },
-  { id: 3, name: 'Workout Days', current: 18, target: 25, unit: 'days', color: 'green' },
+  { id: 2, name: 'Project Hours', current: 45, target: 80, unit: 'hours', color: 'green' },
+  { id: 3, name: 'Workout Days', current: 18, target: 25, unit: 'days', color: 'purple' },
   { id: 4, name: 'Communication Sessions', current: 12, target: 20, unit: 'sessions', color: 'orange' }
 ];
 
